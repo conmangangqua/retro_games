@@ -1,0 +1,109 @@
+/* Additional styles for new design - Add to retro-style.css or link separately */
+
+/* Hide Header */
+.main-header {
+    display: none !important;
+}
+
+.mobile-nav {
+    display: none !important;
+}
+
+/* Adjust sticky search position since header is hidden */
+.sticky-search {
+    top: 0 !important;
+}
+
+/* Prevent horizontal scroll and zoom for mobile webview */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+body, html {
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
+}
+
+/* Prevent text selection on mobile */
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow text selection only in input fields */
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Search icon styling */
+.search-bar {
+    position: relative;
+}
+
+.search-bar input {
+    padding-left: 40px;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-image: url('ic_search.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 1;
+    display: block;
+}
+
+/* Custom fonts fallback */
+@font-face {
+    font-family: 'ByteBounce';
+    src: local('Press Start 2P');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Mozilla Text';
+    src: local('Arial'), local('Helvetica');
+    font-weight: 600;
+}
+
+/* Smooth scrolling for better UX */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Game card refinements */
+.game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Remove old retro effects for cleaner look */
+body::before,
+body::after {
+    display: none !important;
+}
+
+/* Loading spinner refinement */
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}

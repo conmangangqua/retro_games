@@ -98,11 +98,13 @@ function populateFilters(games) {
     const regionFilter = document.getElementById('region-filter');
     // Populate platform
     const platforms = getUniqueValues(games, 'platform');
-    platformFilter.innerHTML = '<option value="">All</option>' +
+    platformFilter.innerHTML = '<option value="" disabled selected hidden>PLATFORM</option>' +
+        '<option value="">All</option>' +
         platforms.map(p => `<option value="${p}">${p}</option>`).join('');
     // Populate region
     const regions = getUniqueValues(games, 'region');
-    regionFilter.innerHTML = '<option value="">All</option>' +
+    regionFilter.innerHTML = '<option value="" disabled selected hidden>REGION</option>' +
+        '<option value="">All</option>' +
         regions.map(r => `<option value="${r}">${r}</option>`).join('');
 }
 
