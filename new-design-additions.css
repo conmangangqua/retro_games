@@ -61,7 +61,7 @@ input, textarea {
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    background-image: url('ic_search.png');
+    background-image: url('./ic_search.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
