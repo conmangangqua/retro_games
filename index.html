@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OA Game Studio - Retro Games Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="retro-style.css">
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loading-overlay">
+        <div class="loading-content">
+            <div class="pixel-spinner">
+                <div></div><div></div><div></div><div></div>
+                <div></div><div></div><div></div><div></div>
+                <div></div><div></div><div></div><div></div>
+                <div></div><div></div><div></div><div></div>
+            </div>
+            <div class="loading-text">LOADING GAMES...</div>
+            <button class="reload-btn" onclick="reloadPage()">RELOAD PAGE</button>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-pixel">
+                    <span class="pixel-t">O</span><span class="pixel-g">A</span><span class="pixel-s">G</span>
+                </div>
+                <div class="logo-text">
+                    <h1>OA GAME STUDIO</h1>
+                    <p class="tagline">Retro Gaming Forever</p>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link active">GAMES</a>
+                <a href="about.html" class="nav-link">ABOUT</a>
+                <a href="contact.html" class="nav-link">CONTACT</a>
+            </nav>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <a href="index.html" class="mobile-nav-link active">GAMES</a>
+        <a href="about.html" class="mobile-nav-link">ABOUT</a>
+        <a href="contact.html" class="mobile-nav-link">CONTACT</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search & Filters -->
+        <div class="sticky-search">
+            <div></div>
+            <div class="search-bar-row">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="SEARCH GAMES..." oninput="searchGames()">
+                    <button id="toggle-view-btn" class="toggle-view-btn" type="button" onclick="toggleView()" aria-label="Toggle View">
+                        <span class="icon-grid" style="display:inline;vertical-align:middle;">
+                            <svg id="icon-grid" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <rect x="2" y="2" width="6" height="6" fill="currentColor" stroke="#0a0442" stroke-width="2"/>
+                                <rect x="12" y="2" width="6" height="6" fill="currentColor" stroke="#0a0442" stroke-width="2"/>
+                                <rect x="2" y="12" width="6" height="6" fill="currentColor" stroke="#0a0442" stroke-width="2"/>
+                                <rect x="12" y="12" width="6" height="6" fill="currentColor" stroke="#0a0442" stroke-width="2"/>
+                            </svg>
+                        </span>
+                        <span class="icon-list" style="display:none;vertical-align:middle;">
+                            <svg id="icon-list" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <rect x="2" y="3" width="16" height="3" fill="currentColor" stroke="#0a0442" stroke-width="2"/>
+                                <rect x="2" y="9" width="16" height="3" fill="currentColor" stroke="#0a0442" stroke-width="2"/>
+                                <rect x="2" y="15" width="16" height="3" fill="currentColor" stroke="#0a0442" stroke-width="2"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+                <div class="filter-inline">
+                    <label for="platform-filter">Platform</label>
+                    <select id="platform-filter" onchange="filterGames()">
+                        <option value="">All</option>
+                    </select>
+                    <label for="region-filter" style="margin-left:18px;">Region</label>
+                    <select id="region-filter" onchange="filterGames()">
+                        <option value="">All</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games Grid -->
+        <div class="grid" id="game-list"></div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="pagination-bar"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>OA GAME STUDIO</h3>
+                <p>Bringing classic gaming experiences to modern platforms. Preserving gaming history, one pixel at a time.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Games</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+            <div class="footer-section">
+                <h4>Our Team</h4>
+                <p>Development • Design • QC<br>Marketing • ASO • Product</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 OA Game Studio. All rights reserved.</p>
+            <p class="pixel-love">Made with <span class="heart">♥</span> for retro gaming</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.classList.toggle('active');
+        }
+
+        // Reload Page
+        function reloadPage() {
+            window.location.reload();
+        }
+
+        // Disable long press actions while preserving scroll
+        function preventContextMenu(e) { e.preventDefault(); }
+        function preventSelect(e) { e.preventDefault(); }
+        function preventDrag(e) { e.preventDefault(); }
+
+        // Apply context menu and selection prevention to document
+        [document, document.body].forEach(el => {
+            el.addEventListener('contextmenu', preventContextMenu);
+            el.addEventListener('selectstart', preventSelect);
+            el.addEventListener('dragstart', preventDrag);
+        });
+
+        // Apply to specific elements that need long press prevention
+        const longPressEls = document.querySelectorAll('a, img, button, input, textarea');
+        longPressEls.forEach(el => {
+            el.addEventListener('contextmenu', preventContextMenu);
+            el.addEventListener('selectstart', preventSelect);
+            el.addEventListener('dragstart', preventDrag);
+        });
+
+        // Function to add improved touch handling for game cards
+        function addTouchHandling(card) {
+            let touchStartTime = 0;
+            let touchStartY = 0;
+            let touchStartX = 0;
+            let isScrolling = false;
+
+            card.addEventListener('touchstart', function(e) {
+                touchStartTime = Date.now();
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+                isScrolling = false;
+            }, { passive: true });
+
+            card.addEventListener('touchmove', function(e) {
+                const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+                const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+
+                if (deltaY > 15 || deltaX > 15) {
+                    isScrolling = true;
+                }
+            }, { passive: true });
+
+            card.addEventListener('touchend', function(e) {
+                const touchDuration = Date.now() - touchStartTime;
+
+                if (!isScrolling && touchDuration < 300) {
+                    card.style.opacity = '0.8';
+                    setTimeout(() => {
+                        card.style.opacity = '';
+                    }, 100);
+                }
+            }, { passive: true });
+        }
+
+        // Apply touch handling to existing game cards
+        document.querySelectorAll('.game').forEach(addTouchHandling);
+
+        // Optimized observer for performance
+        const observer = new MutationObserver(function(mutations) {
+            requestAnimationFrame(() => {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) {
+                            if (node.classList && node.classList.contains('game')) {
+                                addTouchHandling(node);
+                            }
+                            const childCards = node.querySelectorAll && node.querySelectorAll('.game');
+                            if (childCards) {
+                                childCards.forEach(addTouchHandling);
+                            }
+                        }
+                    });
+                });
+            });
+        });
+
+        // Start observing with optimized config
+        observer.observe(document.getElementById('game-list'), {
+            childList: true,
+            subtree: false
+        });
+
+        // Simplified touch handling for mobile
+        let pressTimer = null;
+        let startY = null;
+        let isDragging = false;
+
+        if ('ontouchstart' in window) {
+            document.addEventListener('touchstart', function(e) {
+                startY = e.touches[0].clientY;
+                isDragging = false;
+
+                pressTimer = setTimeout(() => {
+                    if (!isDragging) {
+                        e.preventDefault();
+                    }
+                }, 300);
+            }, { passive: false });
+
+            document.addEventListener('touchmove', function(e) {
+                if (startY !== null) {
+                    const deltaY = Math.abs(e.touches[0].clientY - startY);
+                    if (deltaY > 5) {
+                        isDragging = true;
+                        clearTimeout(pressTimer);
+                    }
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', function() {
+                clearTimeout(pressTimer);
+                startY = null;
+                isDragging = false;
+            }, { passive: true });
+        }
+    </script>
+</body>
+</html>
