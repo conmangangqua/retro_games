@@ -7,10 +7,13 @@ let isListView = false;
 
 
 
+// Current language
+let currentLang = 'en';
+
 // Popular games list - will be prioritized at the top
 const POPULAR_GAMES = [
     "Pokemon - Emerald Version",
-    "Pokemon - Fire Red Version (V1.1)", 
+    "Pokemon - Fire Red Version (V1.1)",
     "Pokemon Ultra Violet (1.22) LSA (Fire Red Hack)",
     "Pokemon - Ruby Version (V1.1)",
     "Pokemon - Leaf Green Version (V1.1)",
@@ -64,27 +67,80 @@ const POPULAR_GAMES = [
 // Function to sort games by popularity
 function sortGamesByPopularity(games) {
     return games.sort((a, b) => {
-        const aIndex = POPULAR_GAMES.findIndex(title => 
-            a.title.toLowerCase().includes(title.toLowerCase()) || 
+        const aIndex = POPULAR_GAMES.findIndex(title =>
+            a.title.toLowerCase().includes(title.toLowerCase()) ||
             title.toLowerCase().includes(a.title.toLowerCase())
         );
-        const bIndex = POPULAR_GAMES.findIndex(title => 
-            b.title.toLowerCase().includes(title.toLowerCase()) || 
+        const bIndex = POPULAR_GAMES.findIndex(title =>
+            b.title.toLowerCase().includes(title.toLowerCase()) ||
             title.toLowerCase().includes(b.title.toLowerCase())
         );
-        
+
         // If both are popular games, sort by their index in POPULAR_GAMES
         if (aIndex !== -1 && bIndex !== -1) {
             return aIndex - bIndex;
         }
-        
+
         // If only one is popular, put it first
         if (aIndex !== -1) return -1;
         if (bIndex !== -1) return 1;
-        
+
         // If neither is popular, maintain original order
         return 0;
     });
+}
+
+
+
+// Function to get language from URL
+function getLanguageFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const lang = params.get('lang');
+    // Check if lang exists in translations, otherwise default to 'en'
+    // Also support short codes if needed, but current map uses 2-letter codes
+    return (lang && translations[lang]) ? lang : 'en';
+}
+
+// Function to apply translations
+function applyTranslations(lang) {
+    currentLang = lang;
+    const t = translations[lang];
+    if (!t) return;
+
+    // Update title
+    document.title = `${t['app.title']} - ${t['app.tagline']}`;
+
+    // Update elements with data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) {
+            if (el.hasAttribute('data-i18n-html')) {
+                el.innerHTML = t[key];
+            } else {
+                el.textContent = t[key];
+            }
+        }
+    });
+
+    // Update elements with data-i18n-placeholder
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (t[key]) {
+            el.placeholder = t[key];
+        }
+    });
+
+    // Refresh dynamic content if it's already loaded
+    const platformFilter = document.getElementById('platform-filter');
+    const regionFilter = document.getElementById('region-filter');
+    if (platformFilter && platformFilter.options.length > 2) {
+        populateFilters(allGames);
+    }
+
+    // Re-render games to update "Download" and "Popular" text
+    if (filteredGames.length > 0) {
+        displayGames(filteredGames);
+    }
 }
 
 // Utility to get unique values for a field
@@ -98,13 +154,14 @@ function populateFilters(games) {
     const regionFilter = document.getElementById('region-filter');
     // Populate platform
     const platforms = getUniqueValues(games, 'platform');
-    platformFilter.innerHTML = '<option value="" disabled selected hidden>PLATFORM</option>' +
-        '<option value="">All</option>' +
+    const t = translations[currentLang];
+    platformFilter.innerHTML = `<option value="" disabled selected hidden>${t['filter.platform']}</option>` +
+        `<option value="">${t['filter.all']}</option>` +
         platforms.map(p => `<option value="${p}">${p}</option>`).join('');
     // Populate region
     const regions = getUniqueValues(games, 'region');
-    regionFilter.innerHTML = '<option value="" disabled selected hidden>REGION</option>' +
-        '<option value="">All</option>' +
+    regionFilter.innerHTML = `<option value="" disabled selected hidden>${t['filter.region']}</option>` +
+        `<option value="">${t['filter.all']}</option>` +
         regions.map(r => `<option value="${r}">${r}</option>`).join('');
 }
 
@@ -119,14 +176,15 @@ async function loadGames(retryCount = 0, fileName = 'games.json') {
     const maxRetries = 2;
     const retryDelay = 2000; // 2 seconds
     const fallbackFiles = ['games.json', 'gbaroms.json', 'sgame.json']; // Fallback options
-    
+
     try {
         // Show loading message
-        updateLoadingMessage(`Loading games... ${retryCount > 0 ? `(Attempt ${retryCount + 1}/${maxRetries + 1})` : ''}`);
-        
+        const loadingMsg = translations[currentLang]['state.loading_retry'].replace('{n}', `${retryCount + 1}/${maxRetries + 1}`);
+        updateLoadingMessage(retryCount > 0 ? loadingMsg : translations[currentLang]['state.loading']);
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000); // Reduced to 8s timeout
-        
+
         const response = await fetch(fileName, {
             cache: 'no-cache',
             headers: {
@@ -135,65 +193,65 @@ async function loadGames(retryCount = 0, fileName = 'games.json') {
             },
             signal: controller.signal
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
+
         const text = await response.text();
         if (!text.trim()) {
             throw new Error('Empty response from server');
         }
-        
+
         let games;
         try {
             games = JSON.parse(text);
         } catch (parseError) {
             throw new Error('Invalid JSON format in response');
         }
-        
+
         if (!Array.isArray(games)) {
             throw new Error('Invalid data format: Expected array of games');
         }
-        
-        const validGames = games.filter(game => 
-            game && 
-            game.download_link !== null && 
-            game.title && 
-            game.platform && 
+
+        const validGames = games.filter(game =>
+            game &&
+            game.download_link !== null &&
+            game.title &&
+            game.platform &&
             game.thumbnail
         );
-        
+
         if (validGames.length === 0) {
             throw new Error("No valid games found in the data");
         }
-        
+
         // Success! Hide loading and sort by popularity
         hideLoadingMessage();
-        
+
         // Sort games by popularity
         const sortedGames = sortGamesByPopularity(validGames);
-        
+
         allGames = sortedGames;
         filteredGames = sortedGames;
         populateFilters(sortedGames);
         displayGames(sortedGames);
-        
-        console.log(`✅ Successfully loaded ${validGames.length} games`);
-        
 
-        
+        console.log(`✅ Successfully loaded ${validGames.length} games`);
+
+
+
     } catch (error) {
         console.error(`❌ Error loading games (attempt ${retryCount + 1}):`, error);
-        
+
         // Determine error type for better user feedback
         let errorMessage = error.message;
         if (error.name === 'AbortError') {
-            errorMessage = 'Request timed out. Please check your connection and try again.';
+            errorMessage = translations[currentLang]['state.loading_long'];
         } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-            errorMessage = 'Network error. Please check your internet connection.';
+            errorMessage = translations[currentLang]['state.offline'];
         } else if (error.message.includes('HTTP 404')) {
             errorMessage = 'Games data file not found on server.';
         } else if (error.message.includes('HTTP 500')) {
@@ -201,11 +259,11 @@ async function loadGames(retryCount = 0, fileName = 'games.json') {
         } else if (error.message.includes('JSON')) {
             errorMessage = 'Data format error. Please refresh the page.';
         }
-        
+
         if (retryCount < maxRetries) {
             // Retry after delay
             const delayTime = retryDelay;
-            updateLoadingMessage(`Loading failed. Retrying in ${delayTime/1000}s... (${retryCount + 1}/${maxRetries})`);
+            updateLoadingMessage(`Loading failed. Retrying in ${delayTime / 1000}s... (${retryCount + 1}/${maxRetries})`);
             setTimeout(() => {
                 loadGames(retryCount + 1, fileName);
             }, delayTime);
@@ -213,7 +271,7 @@ async function loadGames(retryCount = 0, fileName = 'games.json') {
             // Try fallback files if we haven't tried them yet
             const currentFileIndex = fallbackFiles.indexOf(fileName);
             const nextFileIndex = currentFileIndex + 1;
-            
+
             if (nextFileIndex < fallbackFiles.length) {
                 const nextFile = fallbackFiles[nextFileIndex];
                 console.log(`🔄 Trying fallback file: ${nextFile}`);
@@ -253,16 +311,16 @@ function showErrorMessage(errorMessage) {
         gameList.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
                 <div style="color: #ff4444; font-size: 1.2em; margin-bottom: 20px;">
-                    ❌ Error Loading Games
+                    ❌ ${translations && translations[currentLang] ? translations[currentLang]['state.error_title'] : 'Error'}
                 </div>
                 <div style="color: var(--color-text); margin-bottom: 20px; font-size: 0.9em;">
                     ${errorMessage}
                 </div>
                 <div style="margin-bottom: 20px; font-size: 0.8em; color: var(--color-accent); opacity: 0.8;">
-                    💡 Try refreshing the page or check your internet connection
+                    💡 ${translations && translations[currentLang] ? translations[currentLang]['state.offline'] : 'Check connection'}
                 </div>
                 <button onclick="retryLoadGames()" class="retry-btn">
-                    🔄 Retry Loading
+                    🔄 ${translations && translations[currentLang] ? translations[currentLang]['state.retry_btn'] : 'Retry'}
                 </button>
             </div>
         `;
@@ -312,8 +370,8 @@ function goToPage(page) {
 
 // Check if a game is popular
 function isPopularGame(gameTitle) {
-    return POPULAR_GAMES.some(title => 
-        gameTitle.toLowerCase().includes(title.toLowerCase()) || 
+    return POPULAR_GAMES.some(title =>
+        gameTitle.toLowerCase().includes(title.toLowerCase()) ||
         title.toLowerCase().includes(gameTitle.toLowerCase())
     );
 }
@@ -322,8 +380,9 @@ function isPopularGame(gameTitle) {
 function displayGames(games) {
     const gameList = document.getElementById('game-list');
     gameList.innerHTML = '';
+    const t = translations[currentLang];
     if (games.length === 0) {
-        gameList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #f357a8; font-size: 1.2em;">No games found.</div>';
+        gameList.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #f357a8; font-size: 1.2em;">${t['state.no_games']}</div>`;
         document.getElementById('pagination').innerHTML = '';
         return;
     }
@@ -334,9 +393,9 @@ function displayGames(games) {
         const gameItem = document.createElement('div');
         gameItem.classList.add('game');
         if (isListView) gameItem.classList.add('list-item');
-        
-        const popularBadge = isPopularGame(game.title) ? '<div class="popular-badge">🔥 Popular</div>' : '';
-        
+
+        const popularBadge = isPopularGame(game.title) ? `<div class="popular-badge">🔥 ${t['game.popular']}</div>` : '';
+
         gameItem.innerHTML = isListView ? `
             <div class="game-image-container">
                 <img src="${game.thumbnail}" alt="${game.title}">
@@ -344,10 +403,10 @@ function displayGames(games) {
             </div>
             <div class="game-info">
                 <h3>${game.title}</h3>
-                <p><strong>Platform:</strong> ${game.platform}</p>
+                <p><strong>${t['filter.platform']}:</strong> ${game.platform}</p>
                 <a href="${game.download_link}" class="download-btn" target="_blank">
                     <span class="download-spinner"></span>
-                    <span class="download-text">Download</span>
+                    <span class="download-text">${t['game.download']}</span>
                 </a>
             </div>
         ` : `
@@ -357,24 +416,24 @@ function displayGames(games) {
             </div>
             <div class="game-info">
                 <h3>${game.title}</h3>
-                <p><strong>Platform:</strong> ${game.platform}</p>
+                <p><strong>${t['filter.platform']}:</strong> ${game.platform}</p>
                 <a href="${game.download_link}" class="download-btn" target="_blank">
                     <span class="download-spinner"></span>
-                    <span class="download-text">Download</span>
+                    <span class="download-text">${t['game.download']}</span>
                 </a>
             </div>
         `;
         setTimeout(() => {
             const btn = gameItem.querySelector('.download-btn');
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function (e) {
                 // Add loading state
                 btn.classList.add('loading');
-                
+
                 // Remove loading state after download starts (after a short delay)
                 setTimeout(() => {
                     btn.classList.remove('loading');
                 }, 2000);
-                
+
                 // Ripple effect
                 const ripple = document.createElement('span');
                 ripple.className = 'ripple';
@@ -395,7 +454,7 @@ function filterGames() {
     const searchQuery = document.getElementById('search-input').value.toLowerCase();
     const platform = document.getElementById('platform-filter').value;
     const region = document.getElementById('region-filter').value;
-    
+
     let filtered = allGames.filter(game => {
         const matchesSearch =
             game.title.toLowerCase().includes(searchQuery) ||
@@ -404,10 +463,10 @@ function filterGames() {
         const matchesRegion = !region || game.region === region;
         return matchesSearch && matchesPlatform && matchesRegion;
     });
-    
+
     // Sort filtered results by popularity
     filteredGames = sortGamesByPopularity(filtered);
-    
+
     currentPage = 1;
     displayGames(filteredGames);
     renderPagination(filteredGames.length, currentPage);
@@ -440,11 +499,11 @@ function toggleView() {
 
 // Removed theme toggle - using default dark theme
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Loading overlay with improved mobile handling
     const overlay = document.getElementById('loading-overlay');
     let overlayHidden = false;
-    
+
     function hideOverlay() {
         if (!overlayHidden && overlay) {
             overlayHidden = true;
@@ -458,25 +517,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 400);
         }
     }
-    
+
     // Hide overlay when page is fully loaded
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         setTimeout(hideOverlay, 200);
     });
-    
+
     // Fallback hide after 2 seconds
     setTimeout(hideOverlay, 2000);
-    
+
     // Add timeout to show reload button if loading takes too long
     setTimeout(() => {
         if (!overlayHidden && overlay) {
             const loadingText = overlay.querySelector('.loading-text');
             if (loadingText) {
-                loadingText.textContent = 'Loading is taking longer than expected...';
+                loadingText.textContent = translations[currentLang]['state.loading_long'];
             }
         }
     }, 6000); // Show warning after 6 seconds
-    
+
     // Force hide overlay if still visible after 10 seconds
     setTimeout(() => {
         if (!overlayHidden) {
@@ -489,22 +548,28 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     // Check if we're online
     if (!navigator.onLine) {
-        showErrorMessage('No internet connection. Please check your network and try again.');
+        showErrorMessage(translations['en']['state.offline']); // Default to en if script not fully loaded yet or use safe access
         return;
     }
-    
+
+    // Apply translations on load
+    const lang = getLanguageFromURL();
+    if (typeof translations !== 'undefined') {
+        applyTranslations(lang);
+    }
+
     // Load the games data with a safety timeout
     loadGames();
-    
+
     // Safety fallback - if loading takes too long, show error
     setTimeout(() => {
         const gameList = document.getElementById('game-list');
         if (gameList && gameList.innerHTML.includes('Loading games')) {
             console.error('Loading timeout - showing error after 10 seconds');
-            showErrorMessage('Loading is taking too long. Please refresh the page or check your connection.');
+            showErrorMessage(translations[currentLang]['state.loading_long']);
         }
     }, 10000); // Reduced to 10 second safety timeout
-    
+
     // Force hide loading overlay after 12 seconds as ultimate fallback
     setTimeout(() => {
         const overlay = document.getElementById('loading-overlay');
@@ -521,16 +586,16 @@ function initializeApp() {
 }
 
 // Add online/offline event listeners
-window.addEventListener('online', function() {
+window.addEventListener('online', function () {
     console.log('🌐 Connection restored');
     if (document.getElementById('game-list').innerHTML.includes('No internet connection')) {
         loadGames();
     }
 });
 
-window.addEventListener('offline', function() {
+window.addEventListener('offline', function () {
     console.log('📡 Connection lost');
-    showErrorMessage('Connection lost. Please check your internet connection.');
+    showErrorMessage(translations[currentLang] ? translations[currentLang]['state.connection_lost'] : 'Connection lost');
 });
 
 

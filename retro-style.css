@@ -369,8 +369,8 @@ body::after {
 .search-bar input {
     width: 100%;
     padding: 10px 12px;
-    font-family: 'ByteBounce', 'Press Start 2P', monospace;
-    font-size: 20px;
+    font-family: 'Jersey 10', 'Arial', sans-serif;
+    font-size: 16px;
     background: #FFEEDD;
     border: 1px solid #665555;
     color: #665555;
@@ -392,7 +392,7 @@ body::after {
 
 .search-bar input::placeholder {
     color: #665555;
-    font-family: 'ByteBounce', 'Press Start 2P', monospace;
+    font-family: 'Jersey 10', 'Arial', sans-serif;
     text-transform: uppercase;
 }
 

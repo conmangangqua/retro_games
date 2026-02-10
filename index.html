@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,13 +11,14 @@
     <link rel="stylesheet" href="retro-style.css">
     <link rel="stylesheet" href="new-design-additions.css">
 </head>
+
 <body>
     <!-- Loading overlay -->
     <div id="loading-overlay">
         <div class="loading-content">
             <div class="pixel-spinner"></div>
-            <div class="loading-text">Loading games...</div>
-            <button class="reload-btn" onclick="reloadPage()">Reload Page</button>
+            <div class="loading-text" data-i18n="state.loading">Loading games...</div>
+            <button class="reload-btn" onclick="reloadPage()" data-i18n="state.retry_btn">Reload Page</button>
         </div>
     </div>
 
@@ -28,14 +30,14 @@
                     <span class="pixel-t">O</span><span class="pixel-g">A</span><span class="pixel-s">G</span>
                 </div>
                 <div class="logo-text">
-                    <h1>OA GAME STUDIO</h1>
-                    <p class="tagline">Retro Gaming Forever</p>
+                    <h1 data-i18n="app.title">OA GAME STUDIO</h1>
+                    <p class="tagline" data-i18n="app.tagline">Retro Gaming Forever</p>
                 </div>
             </div>
             <nav class="main-nav">
-                <a href="index.html" class="nav-link active">GAMES</a>
-                <a href="about.html" class="nav-link">ABOUT</a>
-                <a href="contact.html" class="nav-link">CONTACT</a>
+                <a href="index.html" class="nav-link active" data-i18n="nav.games">GAMES</a>
+                <a href="about.html" class="nav-link" data-i18n="nav.about">ABOUT</a>
+                <a href="contact.html" class="nav-link" data-i18n="nav.contact">CONTACT</a>
             </nav>
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
                 <span></span>
@@ -47,9 +49,9 @@
 
     <!-- Mobile Navigation -->
     <nav class="mobile-nav" id="mobile-nav">
-        <a href="index.html" class="mobile-nav-link active">GAMES</a>
-        <a href="about.html" class="mobile-nav-link">ABOUT</a>
-        <a href="contact.html" class="mobile-nav-link">CONTACT</a>
+        <a href="index.html" class="mobile-nav-link active" data-i18n="nav.games">GAMES</a>
+        <a href="about.html" class="mobile-nav-link" data-i18n="nav.about">ABOUT</a>
+        <a href="contact.html" class="mobile-nav-link" data-i18n="nav.contact">CONTACT</a>
     </nav>
 
     <!-- Main Content -->
@@ -57,14 +59,15 @@
         <!-- Search & Filters -->
         <div class="sticky-search">
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search games" oninput="searchGames()">
+                <input type="text" id="search-input" placeholder="Search games" oninput="searchGames()"
+                    data-i18n-placeholder="search.placeholder">
             </div>
             <div class="filter-inline">
                 <select id="platform-filter" onchange="filterGames()">
-                    <option value="">Platform</option>
+                    <option value="" data-i18n="filter.platform">Platform</option>
                 </select>
                 <select id="region-filter" onchange="filterGames()">
-                    <option value="">Region</option>
+                    <option value="" data-i18n="filter.region">Region</option>
                 </select>
             </div>
         </div>
@@ -80,32 +83,36 @@
     <footer class="main-footer">
         <div class="footer-container">
             <div class="footer-section">
-                <h3>OA GAME STUDIO</h3>
-                <p>Bringing classic gaming experiences to modern platforms. Preserving gaming history, one pixel at a time.</p>
+                <h3 data-i18n="footer.about_title">OA GAME STUDIO</h3>
+                <p data-i18n="footer.about_text">Bringing classic gaming experiences to modern platforms. Preserving
+                    gaming history, one pixel at a time.</p>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
-                <a href="index.html">Games</a>
-                <a href="about.html">About Us</a>
-                <a href="contact.html">Contact</a>
+                <h4 data-i18n="footer.quick_links">Quick Links</h4>
+                <a href="index.html" data-i18n="nav.games">Games</a>
+                <a href="about.html" data-i18n="nav.about">About Us</a>
+                <a href="contact.html" data-i18n="nav.contact">Contact</a>
             </div>
             <div class="footer-section">
-                <h4>Legal</h4>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
+                <h4 data-i18n="footer.legal">Legal</h4>
+                <a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+                <a href="terms.html" data-i18n="footer.terms">Terms of Service</a>
             </div>
             <div class="footer-section">
-                <h4>Our Team</h4>
-                <p>Development • Design • QC<br>Marketing • ASO • Product</p>
+                <h4 data-i18n="footer.team">Our Team</h4>
+                <p data-i18n="footer.team_roles" data-i18n-html="true">Development • Design • QC<br>Marketing • ASO •
+                    Product</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 OA Game Studio. All rights reserved.</p>
-            <p class="pixel-love">Made with <span class="heart">♥</span> for retro gaming</p>
+            <p data-i18n="footer.rights">&copy; 2025 OA Game Studio. All rights reserved.</p>
+            <p class="pixel-love" data-i18n="footer.made_with" data-i18n-html="true">Made with <span
+                    class="heart">♥</span> for retro gaming</p>
         </div>
     </footer>
 
     <!-- JavaScript -->
+    <script src="translations.js"></script>
     <script src="script.js"></script>
     <script>
         // Mobile Menu Toggle
@@ -146,14 +153,14 @@
             let touchStartX = 0;
             let isScrolling = false;
 
-            card.addEventListener('touchstart', function(e) {
+            card.addEventListener('touchstart', function (e) {
                 touchStartTime = Date.now();
                 touchStartY = e.touches[0].clientY;
                 touchStartX = e.touches[0].clientX;
                 isScrolling = false;
             }, { passive: true });
 
-            card.addEventListener('touchmove', function(e) {
+            card.addEventListener('touchmove', function (e) {
                 const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
                 const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
 
@@ -162,7 +169,7 @@
                 }
             }, { passive: true });
 
-            card.addEventListener('touchend', function(e) {
+            card.addEventListener('touchend', function (e) {
                 const touchDuration = Date.now() - touchStartTime;
 
                 if (!isScrolling && touchDuration < 300) {
@@ -178,10 +185,10 @@
         document.querySelectorAll('.game').forEach(addTouchHandling);
 
         // Optimized observer for performance
-        const observer = new MutationObserver(function(mutations) {
+        const observer = new MutationObserver(function (mutations) {
             requestAnimationFrame(() => {
-                mutations.forEach(function(mutation) {
-                    mutation.addedNodes.forEach(function(node) {
+                mutations.forEach(function (mutation) {
+                    mutation.addedNodes.forEach(function (node) {
                         if (node.nodeType === 1) {
                             if (node.classList && node.classList.contains('game')) {
                                 addTouchHandling(node);
@@ -208,7 +215,7 @@
         let isDragging = false;
 
         if ('ontouchstart' in window) {
-            document.addEventListener('touchstart', function(e) {
+            document.addEventListener('touchstart', function (e) {
                 startY = e.touches[0].clientY;
                 isDragging = false;
 
@@ -219,7 +226,7 @@
                 }, 300);
             }, { passive: false });
 
-            document.addEventListener('touchmove', function(e) {
+            document.addEventListener('touchmove', function (e) {
                 if (startY !== null) {
                     const deltaY = Math.abs(e.touches[0].clientY - startY);
                     if (deltaY > 5) {
@@ -229,7 +236,7 @@
                 }
             }, { passive: true });
 
-            document.addEventListener('touchend', function() {
+            document.addEventListener('touchend', function () {
                 clearTimeout(pressTimer);
                 startY = null;
                 isDragging = false;
@@ -237,4 +244,5 @@
         }
     </script>
 </body>
+
 </html>
