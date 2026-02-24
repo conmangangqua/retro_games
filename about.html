@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - OA Game Studio</title>
+    <title data-i18n="nav.about">About Us - OA Game Studio</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="retro-style.css">
 </head>
+
 <body>
     <!-- Header Navigation -->
     <header class="main-header">
@@ -17,14 +19,14 @@
                     <span class="pixel-t">O</span><span class="pixel-g">A</span><span class="pixel-s">G</span>
                 </div>
                 <div class="logo-text">
-                    <h1>OA GAME STUDIO</h1>
-                    <p class="tagline">Retro Gaming Forever</p>
+                    <h1 data-i18n="app.title">OA GAME STUDIO</h1>
+                    <p class="tagline" data-i18n="app.tagline">Retro Gaming Forever</p>
                 </div>
             </div>
             <nav class="main-nav">
-                <a href="index.html" class="nav-link">GAMES</a>
-                <a href="about.html" class="nav-link active">ABOUT</a>
-                <a href="contact.html" class="nav-link">CONTACT</a>
+                <a href="index.html" class="nav-link" data-i18n="nav.games">GAMES</a>
+                <a href="about.html" class="nav-link active" data-i18n="nav.about">ABOUT</a>
+                <a href="contact.html" class="nav-link" data-i18n="nav.contact">CONTACT</a>
             </nav>
             <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
                 <span></span>
@@ -36,103 +38,116 @@
 
     <!-- Mobile Navigation -->
     <nav class="mobile-nav" id="mobile-nav">
-        <a href="index.html" class="mobile-nav-link">GAMES</a>
-        <a href="about.html" class="mobile-nav-link active">ABOUT</a>
-        <a href="contact.html" class="mobile-nav-link">CONTACT</a>
+        <a href="index.html" class="mobile-nav-link" data-i18n="nav.games">GAMES</a>
+        <a href="about.html" class="mobile-nav-link active" data-i18n="nav.about">ABOUT</a>
+        <a href="contact.html" class="mobile-nav-link" data-i18n="nav.contact">CONTACT</a>
     </nav>
 
     <!-- Main Content -->
     <div class="container">
         <!-- Hero Section -->
         <div class="hero-section">
-            <h1>ABOUT OA GAME STUDIO</h1>
-            <p>Preserving Gaming History • Creating New Legends</p>
+            <h1 data-i18n="about.hero_title">ABOUT OA GAME STUDIO</h1>
+            <p data-i18n="about.hero_subtitle">Preserving Gaming History • Creating New Legends</p>
         </div>
 
         <!-- Who We Are -->
         <div class="section">
-            <h2>WHO WE ARE</h2>
-            <p>
-                OA Game Studio is a passionate team of gaming enthusiasts dedicated to preserving and celebrating the golden age of retro gaming.
-                We specialize in bringing classic gaming experiences to modern platforms, ensuring that timeless masterpieces remain accessible
+            <h2 data-i18n="about.who_we_are_title">WHO WE ARE</h2>
+            <p data-i18n="about.who_we_are_text1">
+                OA Game Studio is a passionate team of gaming enthusiasts dedicated to preserving and celebrating the
+                golden age of retro gaming.
+                We specialize in bringing classic gaming experiences to modern platforms, ensuring that timeless
+                masterpieces remain accessible
                 to both nostalgic veterans and new generations of gamers.
             </p>
-            <p>
-                Founded on the principles of quality, authenticity, and innovation, we combine cutting-edge technology with deep respect for
-                gaming heritage. Our mission is to bridge the gap between retro charm and contemporary gaming standards, delivering experiences
+            <p data-i18n="about.who_we_are_text2">
+                Founded on the principles of quality, authenticity, and innovation, we combine cutting-edge technology
+                with deep respect for
+                gaming heritage. Our mission is to bridge the gap between retro charm and contemporary gaming standards,
+                delivering experiences
                 that honor the past while embracing the future.
             </p>
         </div>
 
         <!-- Our Team -->
         <div class="section">
-            <h2>OUR TEAM</h2>
-            <p>
-                OA Game Studio brings together a diverse group of specialists, each contributing their unique expertise to create
-                exceptional gaming experiences. Our multidisciplinary team works in perfect harmony to deliver quality content to our community.
+            <h2 data-i18n="about.team_title">OUR TEAM</h2>
+            <p data-i18n="about.team_text">
+                OA Game Studio brings together a diverse group of specialists, each contributing their unique expertise
+                to create
+                exceptional gaming experiences. Our multidisciplinary team works in perfect harmony to deliver quality
+                content to our community.
             </p>
             <div class="team-grid">
                 <div class="team-card">
                     <div class="team-icon">💻</div>
-                    <h3>DEVELOPMENT</h3>
-                    <p>Expert developers crafting robust, high-performance gaming solutions with modern technologies and best practices.</p>
+                    <h3 data-i18n="about.dev_title">DEVELOPMENT</h3>
+                    <p data-i18n="about.dev_text">Expert developers crafting robust, high-performance gaming solutions
+                        with modern technologies and best practices.</p>
                 </div>
                 <div class="team-card">
                     <div class="team-icon">🎨</div>
-                    <h3>DESIGN</h3>
-                    <p>Creative designers blending retro aesthetics with modern UX principles to create visually stunning experiences.</p>
+                    <h3 data-i18n="about.design_title">DESIGN</h3>
+                    <p data-i18n="about.design_text">Creative designers blending retro aesthetics with modern UX
+                        principles to create visually stunning experiences.</p>
                 </div>
                 <div class="team-card">
                     <div class="team-icon">🔍</div>
-                    <h3>QUALITY CONTROL</h3>
-                    <p>Meticulous QC specialists ensuring every release meets our high standards of quality and authenticity.</p>
+                    <h3 data-i18n="about.qc_title">QUALITY CONTROL</h3>
+                    <p data-i18n="about.qc_text">Meticulous QC specialists ensuring every release meets our high
+                        standards of quality and authenticity.</p>
                 </div>
                 <div class="team-card">
                     <div class="team-icon">📱</div>
-                    <h3>ASO SPECIALISTS</h3>
-                    <p>App Store Optimization experts making our games discoverable and accessible to players worldwide.</p>
+                    <h3 data-i18n="about.aso_title">ASO SPECIALISTS</h3>
+                    <p data-i18n="about.aso_text">App Store Optimization experts making our games discoverable and
+                        accessible to players worldwide.</p>
                 </div>
                 <div class="team-card">
                     <div class="team-icon">📊</div>
-                    <h3>PRODUCT OWNERS</h3>
-                    <p>Strategic product leaders guiding our vision and ensuring we deliver value to our gaming community.</p>
+                    <h3 data-i18n="about.product_title">PRODUCT OWNERS</h3>
+                    <p data-i18n="about.product_text">Strategic product leaders guiding our vision and ensuring we
+                        deliver value to our gaming community.</p>
                 </div>
                 <div class="team-card">
                     <div class="team-icon">🎯</div>
-                    <h3>MARKETING & UA</h3>
-                    <p>Marketing and User Acquisition teams connecting gamers with the experiences they'll love.</p>
+                    <h3 data-i18n="about.marketing_title">MARKETING & UA</h3>
+                    <p data-i18n="about.marketing_text">Marketing and User Acquisition teams connecting gamers with the
+                        experiences they'll love.</p>
                 </div>
             </div>
         </div>
 
         <!-- Our Values -->
         <div class="section">
-            <h2>OUR VALUES</h2>
+            <h2 data-i18n="about.values_title">OUR VALUES</h2>
             <div class="values-grid">
                 <div class="value-card">
-                    <h3>AUTHENTICITY</h3>
-                    <p>
+                    <h3 data-i18n="about.auth_title">AUTHENTICITY</h3>
+                    <p data-i18n="about.auth_text">
                         We stay true to the original spirit of classic games while enhancing them for modern platforms.
                         Every pixel, every sound, every gameplay mechanic is treated with the respect it deserves.
                     </p>
                 </div>
                 <div class="value-card">
-                    <h3>QUALITY</h3>
-                    <p>
-                        Excellence is non-negotiable. From code quality to user experience, we maintain the highest standards
+                    <h3 data-i18n="about.qual_title">QUALITY</h3>
+                    <p data-i18n="about.qual_text">
+                        Excellence is non-negotiable. From code quality to user experience, we maintain the highest
+                        standards
                         in every aspect of our work. Our reputation is built on consistent quality delivery.
                     </p>
                 </div>
                 <div class="value-card">
-                    <h3>INNOVATION</h3>
-                    <p>
+                    <h3 data-i18n="about.innov_title">INNOVATION</h3>
+                    <p data-i18n="about.innov_text">
                         While we honor gaming's past, we're not afraid to innovate. We leverage cutting-edge technology
                         to enhance classic experiences and create new possibilities for retro gaming.
                     </p>
                 </div>
                 <div class="value-card">
-                    <h3>COMMUNITY</h3>
-                    <p>
+                    <h3 data-i18n="about.comm_title">COMMUNITY</h3>
+                    <p data-i18n="about.comm_text">
                         Our community is at the heart of everything we do. We listen, we engage, and we build
                         experiences that bring gamers together across generations and platforms.
                     </p>
@@ -142,15 +157,20 @@
 
         <!-- Our Mission -->
         <div class="section">
-            <h2>OUR MISSION</h2>
-            <p>
-                At OA Game Studio, we believe that great games are timeless. Our mission is to ensure that the masterpieces
-                of gaming's golden age remain playable, accessible, and enjoyable for current and future generations. We're not
-                just preserving games – we're preserving memories, experiences, and the pure joy that only classic gaming can deliver.
+            <h2 data-i18n="about.mission_title">OUR MISSION</h2>
+            <p data-i18n="about.mission_text1">
+                At OA Game Studio, we believe that great games are timeless. Our mission is to ensure that the
+                masterpieces
+                of gaming's golden age remain playable, accessible, and enjoyable for current and future generations.
+                We're not
+                just preserving games – we're preserving memories, experiences, and the pure joy that only classic
+                gaming can deliver.
             </p>
-            <p>
-                Through careful curation, expert restoration, and thoughtful modernization, we bring retro gaming into the present
-                while maintaining the authentic feel that made these games legendary. Every project we undertake is a labor of love,
+            <p data-i18n="about.mission_text2">
+                Through careful curation, expert restoration, and thoughtful modernization, we bring retro gaming into
+                the present
+                while maintaining the authentic feel that made these games legendary. Every project we undertake is a
+                labor of love,
                 driven by our passion for gaming and our commitment to excellence.
             </p>
         </div>
@@ -160,40 +180,51 @@
     <footer class="main-footer">
         <div class="footer-container">
             <div class="footer-section">
-                <h3>OA GAME STUDIO</h3>
-                <p>Bringing classic gaming experiences to modern platforms. Preserving gaming history, one pixel at a time.</p>
+                <h3 data-i18n="footer.about_title">OA GAME STUDIO</h3>
+                <p data-i18n="footer.about_text">Bringing classic gaming experiences to modern platforms. Preserving
+                    gaming history, one pixel at a time.</p>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
-                <a href="index.html">Games</a>
-                <a href="about.html">About Us</a>
-                <a href="contact.html">Contact</a>
+                <h4 data-i18n="footer.quick_links">Quick Links</h4>
+                <a href="index.html" data-i18n="nav.games">Games</a>
+                <a href="about.html" data-i18n="nav.about">About Us</a>
+                <a href="contact.html" data-i18n="nav.contact">Contact</a>
             </div>
             <div class="footer-section">
-                <h4>Legal</h4>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
+                <h4 data-i18n="footer.legal">Legal</h4>
+                <a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+                <a href="terms.html" data-i18n="footer.terms">Terms of Service</a>
             </div>
             <div class="footer-section">
-                <h4>Our Team</h4>
-                <p>Development • Design • QC<br>Marketing • ASO • Product</p>
+                <h4 data-i18n="footer.team">Our Team</h4>
+                <p data-i18n="footer.team_roles" data-i18n-html="true">Development • Design • QC<br>Marketing • ASO •
+                    Product</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 OA Game Studio. All rights reserved.</p>
-            <p class="pixel-love">Made with <span class="heart">♥</span> for retro gaming</p>
+            <p data-i18n="footer.rights">&copy; 2025 OA Game Studio. All rights reserved.</p>
+            <p class="pixel-love" data-i18n="footer.made_with" data-i18n-html="true">Made with <span
+                    class="heart">♥</span> for retro gaming</p>
         </div>
     </footer>
 
+    <script src="translations.js"></script>
+    <script src="script.js"></script>
     <script>
-        function toggleMobileMenu() {
-            const mobileNav = document.getElementById('mobile-nav');
-            mobileNav.classList.toggle('active');
-        }
+        // No need to redefine toggleMobileMenu as it's in script.js (if I move it there)
+        // Wait, toggleMobileMenu is in index.html script block but about.html has its own.
+        // Let's keep it but ensure initializeApp is called.
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initializeApp === 'function') {
+                initializeApp();
+            }
+        });
 
         // Disable text selection and context menu
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('selectstart', e => e.preventDefault());
     </script>
 </body>
+
 </html>

@@ -107,6 +107,15 @@ function applyTranslations(lang) {
     const t = translations[lang];
     if (!t) return;
 
+    // Handle RTL
+    if (lang === 'ar') {
+        document.documentElement.dir = 'rtl';
+        document.documentElement.lang = 'ar';
+    } else {
+        document.documentElement.dir = 'ltr';
+        document.documentElement.lang = lang;
+    }
+
     // Update title
     document.title = `${t['app.title']} - ${t['app.tagline']}`;
 
@@ -141,6 +150,34 @@ function applyTranslations(lang) {
     if (filteredGames.length > 0) {
         displayGames(filteredGames);
     }
+
+    // Persist language in all links
+    persistLanguageInLinks(lang);
+}
+
+// Function to persist language in all internal links
+function persistLanguageInLinks(lang) {
+    document.querySelectorAll('a[href]').forEach(a => {
+        const href = a.getAttribute('href');
+        // Only target internal HTML links
+        if (href && (href.endsWith('.html') || !href.includes('://')) && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('#')) {
+            try {
+                const url = new URL(href, window.location.origin);
+                url.searchParams.set('lang', lang);
+                // Preserve only the relative path or the full internal path
+                const newHref = href.includes('://') ? url.toString() : (url.pathname + url.search + url.hash).replace(/^\//, '');
+                a.setAttribute('href', newHref || href);
+            } catch (e) {
+                // If URL parsing fails, just append manually
+                const separator = href.includes('?') ? '&' : '?';
+                if (!href.includes('lang=')) {
+                    a.setAttribute('href', href + separator + 'lang=' + lang);
+                } else {
+                    a.setAttribute('href', href.replace(/lang=[^&]*/, 'lang=' + lang));
+                }
+            }
+        }
+    });
 }
 
 // Utility to get unique values for a field
@@ -179,8 +216,9 @@ async function loadGames(retryCount = 0, fileName = 'games.json') {
 
     try {
         // Show loading message
-        const loadingMsg = translations[currentLang]['state.loading_retry'].replace('{n}', `${retryCount + 1}/${maxRetries + 1}`);
-        updateLoadingMessage(retryCount > 0 ? loadingMsg : translations[currentLang]['state.loading']);
+        const t = translations[currentLang] || translations['en'];
+        const loadingMsg = t['state.loading_retry'].replace('{n}', `${retryCount + 1}/${maxRetries + 1}`);
+        updateLoadingMessage(retryCount > 0 ? loadingMsg : t['state.loading']);
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000); // Reduced to 8s timeout
@@ -247,23 +285,27 @@ async function loadGames(retryCount = 0, fileName = 'games.json') {
         console.error(`❌ Error loading games (attempt ${retryCount + 1}):`, error);
 
         // Determine error type for better user feedback
+        const t = translations[currentLang] || translations['en'];
         let errorMessage = error.message;
         if (error.name === 'AbortError') {
-            errorMessage = translations[currentLang]['state.loading_long'];
+            errorMessage = t['state.loading_long'];
         } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-            errorMessage = translations[currentLang]['state.offline'];
+            errorMessage = t['state.offline'];
         } else if (error.message.includes('HTTP 404')) {
-            errorMessage = 'Games data file not found on server.';
+            errorMessage = t['state.error_404'];
         } else if (error.message.includes('HTTP 500')) {
-            errorMessage = 'Server error. Please try again later.';
+            errorMessage = t['state.error_500'];
         } else if (error.message.includes('JSON')) {
-            errorMessage = 'Data format error. Please refresh the page.';
+            errorMessage = t['state.error_format'];
         }
-
         if (retryCount < maxRetries) {
             // Retry after delay
             const delayTime = retryDelay;
-            updateLoadingMessage(`Loading failed. Retrying in ${delayTime / 1000}s... (${retryCount + 1}/${maxRetries})`);
+            const retryMsg = t['state.loading_failed']
+                .replace('{n}', (delayTime / 1000).toString())
+                .replace('{current}', (retryCount + 1).toString())
+                .replace('{max}', maxRetries.toString());
+            updateLoadingMessage(retryMsg);
             setTimeout(() => {
                 loadGames(retryCount + 1, fileName);
             }, delayTime);
@@ -275,7 +317,7 @@ async function loadGames(retryCount = 0, fileName = 'games.json') {
             if (nextFileIndex < fallbackFiles.length) {
                 const nextFile = fallbackFiles[nextFileIndex];
                 console.log(`🔄 Trying fallback file: ${nextFile}`);
-                updateLoadingMessage(`Trying alternative data source: ${nextFile}...`);
+                updateLoadingMessage(t['state.loading_fallback'].replace('{file}', nextFile));
                 setTimeout(() => {
                     loadGames(0, nextFile); // Reset retry count for new file
                 }, 1500);
@@ -531,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!overlayHidden && overlay) {
             const loadingText = overlay.querySelector('.loading-text');
             if (loadingText) {
-                loadingText.textContent = translations[currentLang]['state.loading_long'];
+                loadingText.textContent = translations[currentLang]['state.loading_long'] || "Loading is taking longer than expected...";
             }
         }
     }, 6000); // Show warning after 6 seconds
@@ -548,7 +590,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function initializeApp() {
     // Check if we're online
     if (!navigator.onLine) {
-        showErrorMessage(translations['en']['state.offline']); // Default to en if script not fully loaded yet or use safe access
+        showErrorMessage(translations[currentLang] ? translations[currentLang]['state.offline'] : (translations['en']['state.offline'] || "No internet connection"));
         return;
     }
 
@@ -566,7 +608,7 @@ function initializeApp() {
         const gameList = document.getElementById('game-list');
         if (gameList && gameList.innerHTML.includes('Loading games')) {
             console.error('Loading timeout - showing error after 10 seconds');
-            showErrorMessage(translations[currentLang]['state.loading_long']);
+            showErrorMessage(translations[currentLang]['state.loading_long'] || "Loading is taking longer than expected...");
         }
     }, 10000); // Reduced to 10 second safety timeout
 
@@ -602,3 +644,11 @@ window.addEventListener('offline', function () {
 
 // Initialize app
 initializeApp();
+
+// Mobile Menu Toggle
+function toggleMobileMenu() {
+    const mobileNav = document.getElementById('mobile-nav');
+    if (mobileNav) {
+        mobileNav.classList.toggle('active');
+    }
+}
